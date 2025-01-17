@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>상세 페이지</title>
+  </head>
+  <body>
+    <div id="itemDetail"></div>
+
+    <script>
+      // URL에서 아이템 정보 가져오기
+      // window.location.search: 현재 URL의 쿼리 문자열을 가져옴
+      // URL이 detail.html?item=아이템%2010이라면,
+      // window.location.search는 ?item=아이템%2010
+      // new URLSearchParams(): URL의 쿼리 파라미터를 쉽게 다룰 수 있는 객체를 생성
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // urlParams.get('item'): 'item' 이름의 쿼리 파라미터 값을 가져옴
+      // 예: URL이 detail.html?item=아이템%2010이라면, item은 "아이템 10"
+      // %20은 공백을 의미하는 URL 인코딩된 문자
+      const item = urlParams.get("item");
+
+      // 상세 페이지에 아이템 정보 표시
+      // HTML에서 'itemDetail' id를 가진 요소를 찾아
+      // 그 요소의 텍스트 내용을 "상세 정보: 아이템 10"으로 설정
+      document.getElementById("itemDetail").textContent = `상세 정보: ${item}`;
+    </script>
+  </body>
+</html>
