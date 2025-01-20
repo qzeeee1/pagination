@@ -52,6 +52,10 @@ const Pagination = ({ data, itemsPerPage }) => {
         // (url 에서 현재 페이지 번호를 가져오거나, 없으면 1페이지로 설정)
         1,
     // 전체 페이지 수도 함께 전달
+    // 사용자가 특정 페이지로 직접 URL 접근할 수 있게 하기 위해
+    // 페이지 정보가 없을 때 자동으로 첫 페이지를 보여주기 위해
+    // 페이지네이션 컴포넌트가 현재 페이지와 전체 페이지 수를 알아야
+    // 적절한 UI를 구성할 수 있기 때문
     totalPages
   );
 
@@ -111,23 +115,34 @@ const Pagination = ({ data, itemsPerPage }) => {
     // 버튼이 활성화 상태일 때만 클릭 이벤트 추가
     // 변경된 URL로 이동
     if (isDisabled) {
-      button.disabled = true;
+      // -> "이 버튼을 비활성화 상태로 만들어야 하나요?"라는 조건을 확인
+      // 아직 실제로 비활성화 된것이 아님.
+
+      button.disabled = true; // 버튼을 실제로 비활성화시키는 JavaScript 동작
       button.classList.add("disabled");
+      // 버튼의 시각적인 스타일을 변경하기 위한 것. 이미 버튼은 비활성화 되어있음.
     } else {
       button.addEventListener("click", () => updateURL(pageNumber));
     }
     if (pageNumber === currentPage) {
       button.classList.add("active");
-    }
+    } // 현재 페이지 번호(pageNumber)가 currentPage와 같다면
+    // 버튼에 "active" CSS 클래스를 추가하여 현재 페이지임을 표시
+    // background-color: #007bff;
     return button;
   };
 
   // 페이지네이션 UI 전체를 생성하는 함수
+
   const createPagination = () => {
     const paginationContainer = document.createElement("div");
     paginationContainer.classList.add("pagination");
 
     // 첫 페이지 버튼
+    // - 첫 번째 인자 "<<": 버튼에 표시될 텍스트
+    // - 두 번째 인자 1: 이동할 페이지 번호 (여기서는 1페이지, 즉 첫 페이지)
+    // - 세 번째 인자 currentPage === 1: 현재 페이지가 1이면 true, 아니면 false
+    //   이 값이 isDisabled 매개변수로 전달됨
     paginationContainer.appendChild(
       createNavigationButton("<<", 1, currentPage === 1)
     );
@@ -143,6 +158,12 @@ const Pagination = ({ data, itemsPerPage }) => {
     // 마지막 페이지를 기준으로 9페이지를 빼서 시작 페이지를 다시 계산하되,
     // 1페이지보다 작아질 순 없다"는 의미
     startPage = Math.max(1, endPage - 9); // 끝페이지 기준으로 시작페이지 재조정
+    // 예시 - 전체 20페이지에서 현재 7페이지일 때 (currentPage = 7 totalPages = 20)
+    // 1단계: 시작 페이지 계산 -> startPage = Math.max(1, 7 - 4) = 3
+    // 2단계: 끝 페이지 계산 -> endPage = Math.min(20, 3 + 9) = 12
+    // 3단계: 시작 페이지 재조정 -> startPage = Math.max(1, 12 - 9) = 3
+    // 결과: 3,4,5,6,7,8,9,10,11,12 이렇게 10개의 페이지 번호가 보임
+    // 현재 페이지(7)를 중심으로 적절히 앞뒤 페이지들이 보이게 됨
 
     // 각 페이지 번호 버튼 추가
     // 예: startPage가 1이고 endPage가 5일 때
@@ -156,14 +177,6 @@ const Pagination = ({ data, itemsPerPage }) => {
     for (let i = startPage; i <= endPage; i++) {
       paginationContainer.appendChild(createNavigationButton(i, i, false));
     }
-
-    // 예시 - 전체 20페이지에서 현재 7페이지일 때 (currentPage = 7 totalPages = 20)
-    // 1단계: 시작 페이지 계산 -> startPage = Math.max(1, 7 - 4) = 3
-    // 2단계: 끝 페이지 계산 -> endPage = Math.min(20, 3 + 9) = 12
-    // 3단계: 시작 페이지 재조정 -> startPage = Math.max(1, 12 - 9) = 3
-
-    // 결과: 3,4,5,6,7,8,9,10,11,12 이렇게 10개의 페이지 번호가 보임
-    // 현재 페이지(7)를 중심으로 적절히 앞뒤 페이지들이 보이게 됨
 
     // 첫 페이지로 이동하는 버튼 추가
     // appendChild : HTML 요소에 자식 요소를 추가하는 JavaScript 메서드
@@ -220,10 +233,18 @@ const displayData = (data, currentPage, itemsPerPage) => {
   // 이전 페이지의 데이터가 계속 누적되는 것을 방지
   contentList.innerHTML = "";
 
-  // 각 직원 정보를 포함하는 div 요소를 동적으로 생성
-  // 각 데이터는 이름, 직책, 이메일, 전화번호를 포함
   data.slice(startIndex, endIndex).forEach((item, index) => {
     // 각 항목에 대해 리스트 아이템(div) 생성
+    // 1. data.slice(startIndex, endIndex)
+    // - data 배열에서 startIndex부터 endIndex 전까지의 데이터를 잘라냄냄
+    // - 예: 한 페이지에 10개씩 보여준다면, 1페이지는 (0, 10), 2페이지는 (10, 20) 이런 식
+
+    // 2. .forEach((item, index) => { ... })
+    // - 잘라낸 데이터의 각 항목에 대해 반복 실행
+    // - item: 현재 처리중인 직원 데이터 (name, position, email, phone 등을 포함)
+    // - index: 현재 처리중인 항목의 인덱스 (0부터 시작)
+
+    // 3. 각 직원마다 아래 구조의 HTML이 생성됩니다:
     const employeeRow = document.createElement("div");
     employeeRow.classList.add("employee-row");
 
@@ -235,7 +256,7 @@ const displayData = (data, currentPage, itemsPerPage) => {
       <span class="employee-email">${item.email}</span>
       <span class="employee-phone">${item.phone}</span>
     `;
-
+    // 5. 생성된 직원 행을 목록에 추가
     contentList.appendChild(employeeRow);
   });
 };
@@ -282,12 +303,26 @@ style.textContent = `
     cursor: not-allowed;
   }
 `;
+// 1. style 엘리먼트를 생성
+// const style = document.createElement('style');
+// 2. style 엘리먼트에 CSS 규칙을 추가
+// style.textContent = `
+//   .my-class {
+//        color: blue;
+//        font-size: 16px; `;
+
+// 3. head에 style 추가
+document.head.appendChild(style);
+// head 의 자식요소에 style 추가
+// <head>
+// <!-- 여기에 style이 추가됨 -->
 document.head.appendChild(style);
 
 // 샘플 데이터 생성, length 에 원하는 숫자 입력. 현재 200개의 리스트
 // { length: 200 }: 길이가 200인 유사 배열 객체를 생성
 // Array.from()의 첫 번째 매개변수로 사용
 // (_, i) => 아이템 ${i + 1}, 매핑 함수(mapping function)
+// 첫번째 매개변수 값, 두번째 매개변수 인덱스.
 // _: 현재 요소 (사용하지 않을 때는 관례적으로 _로 표시)
 // i: 인덱스 (0부터 시작), 각 요소를 "아이템 1", "아이템 2" 등으로 변환
 // 샘플 데이터 생성 및 초기 렌더링
@@ -307,7 +342,7 @@ const itemsPerPage = 10;
 // pagination 컴포넌트 생성. 매개변수로 데이터 배열(data),
 // 페이지당 표시할 항목 수를 받음(itemsPerPage)
 const pagination = Pagination({
-  data: sampleData, // 전체 데이터 (예: 게시글 목록)
+  data: sampleData, // 위에서 변수로 정의됨. 사용자의 정보
   itemsPerPage: itemsPerPage, // 한 페이지당 보여줄 개수
 });
 
