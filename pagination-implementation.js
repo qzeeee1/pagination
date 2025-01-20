@@ -13,7 +13,7 @@ const sampleData = Array.from({ length: 100 }, (_, i) => `아이템 ${i + 1}`);
 const itemsPerPage = 10;
 
 const displayData = (data, currentPage, itemsPerPage) => {
-//   // 시작과 끝 인덱스 계산
+  //   // 시작과 끝 인덱스 계산
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 

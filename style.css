@@ -1,49 +1,94 @@
-.pagination-container {
-  margin: 20px auto;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
-  max-width: 800px;
 }
 
-.content-list {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 20px;
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.content-item {
-  padding: 10px;
+/* colgroup 스타일 추가 */
+.employee-table col.col-no {
+  width: 8%;
+}
+.employee-table col.col-profile {
+  width: 7%;
+} /* 프로필 열 너비 축소 */
+.employee-table col.col-name {
+  width: 25%;
+}
+.employee-table col.col-position {
+  width: 15%;
+}
+.employee-table col.col-email {
+  width: 25%;
+}
+.employee-table col.col-phone {
+  width: 20%;
+}
+
+.employee-table th,
+.employee-table td {
+  padding: 12px;
+  text-align: center;
   border-bottom: 1px solid #eee;
-  margin: 5px 0;
+  vertical-align: middle;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+
+.employee-table th {
+  background-color: #f8f9fa;
+  font-weight: 500;
+}
+
+.employee-table tr {
+  height: 60px;
+}
+
+.profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 8%;
 }
 
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 5px;
+  gap: 8px;
   margin-top: 20px;
 }
 
 .page-btn {
-  padding: 8px 12px;
+  min-width: 40px;
+  height: 40px;
   border: 1px solid #ddd;
   background: white;
   cursor: pointer;
   border-radius: 4px;
-  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-btn:disabled,
+.page-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
 }
 
 .page-btn:hover:not(:disabled) {
-  background: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
-.page-btn:disabled {
-  background: #2196f3;
-  color: white;
-  border-color: #2196f3;
-  cursor: default;
-}
-
-* {
-  text-decoration: none;
-  color: black;
+.employee-email,
+.employee-name,
+.employee-position,
+.employee-phone {
+  text-align: center;
 }
